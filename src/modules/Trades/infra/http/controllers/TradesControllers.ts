@@ -11,9 +11,6 @@ export default class TradesControllers {
 
     const createTrade = container.resolve(CreateTradeService);
 
-    const time = parseISO(date);
-    console.log(time);
-
     const addTrades = await createTrade.execute({
       currency,
       date: parseISO(date),

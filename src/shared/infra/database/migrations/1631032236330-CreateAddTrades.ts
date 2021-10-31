@@ -36,7 +36,7 @@ export class CreateAddTrades1631032236330 implements MigrationInterface {
           },
           {
             name: 'value_trade',
-            type: 'integer',
+            type: 'float',
           },
           {
             name: 'created_at',

@@ -9,13 +9,6 @@ import ListStatistics from '@modules/Trades/infra/typeorm/models/ListStatistics'
 import ITradesRespository from '../repositories/ITradesRepository';
 import IListResultsTradeRepository from '../repositories/IListResultsTradeRepository';
 
-/* interface IResponse {
-  currentMonth: number,
-  currentYear: number,
-  currentWeek: number,
-  today: number;
-} */
-
 interface IRequest{
   user_id: string;
 }
@@ -32,31 +25,58 @@ class ListResultsTrades {
   ) {}
 
   public async execute({ user_id }: IRequest):Promise<ListStatistics> {
-    const dateSeacher = await this.tradesRepository.findByTrades(user_id);
+    const dateSeacherTrades = await this.tradesRepository.findByTrades(user_id);
+    const dateSeacherRemoveTrades = await this.tradesRepository.findByRemoveTrades(user_id);
 
-    const currentMonth = dateSeacher.filter((list) => isThisMonth(list.date)).map(
+    const currentMonth = dateSeacherTrades.filter((list) => isThisMonth(list.date)).map(
       (list) => list.value_trade,
     ).reduce((currentMonth, array) => currentMonth + array, 0);
 
-    const currentWeek = dateSeacher.filter((list) => isThisWeek(list.date)).map(
+    const currentMonthnegative = dateSeacherRemoveTrades.filter(
+      (list) => isThisMonth(list.date),
+    ).map(
+      (list) => list.value_trade,
+    ).reduce((currentMonth, array) => currentMonth + array, 0);
+
+    const amountMonth = currentMonth + currentMonthnegative;
+
+    const currentWeek = dateSeacherTrades.filter((list) => isThisWeek(list.date)).map(
       (list) => list.value_trade,
     ).reduce((currentWeek, array) => currentWeek + array, 0);
 
-    const today = dateSeacher.filter((list) => isToday(list.date)).map(
+    const currentWeeknegative = dateSeacherRemoveTrades.filter((list) => isThisWeek(list.date)).map(
+      (list) => list.value_trade,
+    ).reduce((currentWeek, array) => currentWeek + array, 0);
+
+    const amountWeek = currentWeek + currentWeeknegative;
+
+    const today = dateSeacherTrades.filter((list) => isToday(list.date)).map(
       (list) => list.value_trade,
     ).reduce((today, array) => today + array, 0);
 
-    const currentYear = dateSeacher.filter((list) => isThisYear(list.date)).map(
+    const todaynegative = dateSeacherRemoveTrades.filter((list) => isToday(list.date)).map(
+      (list) => list.value_trade,
+    ).reduce((today, array) => today + array, 0);
+
+    const amountToday = today + todaynegative;
+
+    const currentYear = dateSeacherTrades.filter((list) => isThisYear(list.date)).map(
       (list) => list.value_trade,
     ).reduce((currentYear, array) => currentYear + array, 0);
+
+    const currentYearnegative = dateSeacherRemoveTrades.filter((list) => isThisYear(list.date)).map(
+      (list) => list.value_trade,
+    ).reduce((currentYear, array) => currentYear + array, 0);
+
+    const amountYear = currentYear + currentYearnegative;
 
     const userIDStatistics = await this.listResultsTradeRepository.findByUserIdStatistics(user_id);
 
     if (userIDStatistics) {
-      userIDStatistics.currentMonth = currentMonth;
-      userIDStatistics.currentWeek = currentWeek;
-      userIDStatistics.currentYear = currentYear;
-      userIDStatistics.today = today;
+      userIDStatistics.currentMonth = amountMonth;
+      userIDStatistics.currentWeek = amountWeek;
+      userIDStatistics.currentYear = amountYear;
+      userIDStatistics.today = amountToday;
 
       await this.listResultsTradeRepository.saveStatistics(userIDStatistics);
 
@@ -65,10 +85,10 @@ class ListResultsTrades {
 
     const infoReport = await this.listResultsTradeRepository.createStatistics({
       user_id,
-      currentYear,
-      currentMonth,
-      currentWeek,
-      today,
+      currentYear: amountYear,
+      currentMonth: amountMonth,
+      currentWeek: amountWeek,
+      today: amountToday,
     });
 
     return infoReport;

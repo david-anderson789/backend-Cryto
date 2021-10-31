@@ -27,22 +27,7 @@ class RemoveTradeService {
   }:IRequest): Promise<Trades> {
     const viewCurrency = await this.coingeckoclient.coinId(currency);
 
-    const checkCurrencyExists: Trades = await this.tradesRepository.findByCurrency(
-      viewCurrency.name, user_id,
-    );
-    // checa se moeda já existe, se existir atualiza seu valor total no trade
-    if (checkCurrencyExists) {
-      const valueTotal = checkCurrencyExists.value_trade + (-value_trade);
-
-      checkCurrencyExists.value_trade = valueTotal;
-
-      await this.tradesRepository.save(checkCurrencyExists);
-
-      return checkCurrencyExists;
-    }
-    // Se não ouver essa moeda no banco de dados adiciona-se a msm.
-
-    const trade = await this.tradesRepository.create({
+    const trade = await this.tradesRepository.createRemove({
       currency: viewCurrency.name,
       date,
       value_trade: (-value_trade),

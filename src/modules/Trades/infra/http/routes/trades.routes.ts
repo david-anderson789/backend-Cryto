@@ -1,13 +1,18 @@
 import { Router } from 'express';
 import ensureAuthenticated from '@modules/User/infra/middlewares/ensureAuthenticated';
+import ListCreateTradeControllers from '../controllers/ListCreateTradeControllers';
 import TradesControllers from '../controllers/TradesControllers';
 import ListStatisticsControllers from '../controllers/ListStatisticsControllers';
+import RemoveTradesControllers from '../controllers/RemoveTradesContrallers';
+import ListAmoutMonthsControllers from '../controllers/ListAmoutMonthsControllers';
 
 const tradesRouter = Router();
 
 const tradesControllers = new TradesControllers();
 const listStatisticsControllers = new ListStatisticsControllers();
-
+const removeTradesControllers = new RemoveTradesControllers();
+const listCreateTradeControllers = new ListCreateTradeControllers();
+const listAmoutMonthsControllers = new ListAmoutMonthsControllers();
 /* tradesRouter.get('/', async (req, res) => {
   const usersRepository = getRepository(Trades);
 
@@ -19,7 +24,9 @@ const listStatisticsControllers = new ListStatisticsControllers();
 tradesRouter.post('/', ensureAuthenticated, tradesControllers.create);
 tradesRouter.post('/removetrade', ensureAuthenticated, tradesControllers.delete);
 tradesRouter.post('/liststatistics', ensureAuthenticated, listStatisticsControllers.create);
-
+tradesRouter.get('/', ensureAuthenticated, removeTradesControllers.index);
+tradesRouter.get('/listTrades', ensureAuthenticated, listCreateTradeControllers.index);
+tradesRouter.get('/listAmoutMonths', ensureAuthenticated, listAmoutMonthsControllers.index);
 /*  const view = await testnet.coinId({
     id: currency,
     localization: false,

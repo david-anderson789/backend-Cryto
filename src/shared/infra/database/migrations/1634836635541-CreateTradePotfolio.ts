@@ -3,11 +3,11 @@ import {
   MigrationInterface, QueryRunner, Table, TableForeignKey,
 } from 'typeorm';
 
-export class CreateStatisticsTrades1633533233574 implements MigrationInterface {
+export class CreateTradePotfolio1634836635541 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'statistics',
+        name: 'wallets_trades',
         columns: [
           {
             name: 'id',
@@ -17,24 +17,37 @@ export class CreateStatisticsTrades1633533233574 implements MigrationInterface {
             default: 'gen_random_uuid()',
           },
           {
-            name: 'user_id',
+            name: 'wallet_id',
             type: 'uuid',
             isNullable: true,
           },
           {
-            name: 'today',
+            name: 'currency',
+            type: 'varchar',
+          },
+          {
+            name: 'symbol',
+            type: 'varchar',
+          },
+          {
+            name: 'date',
+            type: 'timestamp with time zone',
+            isNullable: false,
+          },
+          {
+            name: 'value_currency',
             type: 'float',
           },
           {
-            name: 'currentWeek',
+            name: 'image',
+            type: 'varchar',
+          },
+          {
+            name: 'qtd_currency',
             type: 'float',
           },
           {
-            name: 'currentMonth',
-            type: 'float',
-          },
-          {
-            name: 'currentYear',
+            name: 'amount_fiat',
             type: 'float',
           },
           {
@@ -50,18 +63,18 @@ export class CreateStatisticsTrades1633533233574 implements MigrationInterface {
         ],
       }),
     );
-    await queryRunner.createForeignKey('statistics', new TableForeignKey({
-      name: 'statisticsOfUser',
-      columnNames: ['user_id'],
+    await queryRunner.createForeignKey('wallets_trades', new TableForeignKey({
+      name: 'walletsOfTrades',
+      columnNames: ['wallet_id'],
       referencedColumnNames: ['id'],
-      referencedTableName: 'users',
+      referencedTableName: 'wallets',
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
     }));
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropForeignKey('statistics', 'statisticsOfUser');
-    await queryRunner.dropTable('statistics');
+    await queryRunner.dropForeignKey('wallets_trades', 'walletsOfTrades');
+    await queryRunner.dropTable('wallets_trades');
   }
 }

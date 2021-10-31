@@ -14,6 +14,11 @@ import CoinGeckoClients from '@modules/Trades/coins/CoinGeckoClient/implementati
 import IListResultsTradeRepository from '@modules/Trades/repositories/IListResultsTradeRepository';
 import ListResultsTradeRepository from '@modules/Trades/infra/typeorm/repositories/ListResultsTradeRepository';
 
+import IWalletRepository from '@modules/Portfolio/repositories/IWalletRepository';
+import WalletRepository from '@modules/Portfolio/infra/typeorm/repositories/WalletRepository';
+import IWalletTradesRepository from '@modules/Portfolio/repositories/IWalletTradesRepository';
+import WalletTradeRepository from '@modules/Portfolio/infra/typeorm/repositories/WalletTradeRepository';
+
 container.registerSingleton<IUsersRepository>(
   'UsersRepository', UsersRepository,
 );
@@ -28,4 +33,12 @@ container.registerSingleton<ICoinGeckoClient>(
 
 container.registerSingleton<IListResultsTradeRepository>(
   'ListResultsTradeRepository', ListResultsTradeRepository,
+);
+
+container.registerSingleton<IWalletRepository>(
+  'WalletRepository', WalletRepository,
+);
+
+container.registerSingleton<IWalletTradesRepository>(
+  'WalletTradeRepository', WalletTradeRepository,
 );

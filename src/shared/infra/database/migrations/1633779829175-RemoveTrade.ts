@@ -3,18 +3,31 @@ import {
   MigrationInterface, QueryRunner, Table, TableForeignKey,
 } from 'typeorm';
 
-export class CreateStatisticsTrades1633533233574 implements MigrationInterface {
+export class RemoveTrade1633779829175 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'statistics',
+        name: 'remove_trades',
         columns: [
           {
             name: 'id',
-            type: 'uuid',
+            type: 'varchar',
             isPrimary: true,
             generationStrategy: 'uuid',
             default: 'gen_random_uuid()',
+          },
+          {
+            name: 'currency',
+            type: 'varchar',
+          },
+          {
+            name: 'initials',
+            type: 'varchar',
+          },
+          {
+            name: 'date',
+            type: 'timestamp with time zone',
+            isNullable: false,
           },
           {
             name: 'user_id',
@@ -22,19 +35,7 @@ export class CreateStatisticsTrades1633533233574 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: 'today',
-            type: 'float',
-          },
-          {
-            name: 'currentWeek',
-            type: 'float',
-          },
-          {
-            name: 'currentMonth',
-            type: 'float',
-          },
-          {
-            name: 'currentYear',
+            name: 'value_trade',
             type: 'float',
           },
           {
@@ -50,8 +51,8 @@ export class CreateStatisticsTrades1633533233574 implements MigrationInterface {
         ],
       }),
     );
-    await queryRunner.createForeignKey('statistics', new TableForeignKey({
-      name: 'statisticsOfUser',
+    await queryRunner.createForeignKey('remove_trades', new TableForeignKey({
+      name: 'tradeOfUser',
       columnNames: ['user_id'],
       referencedColumnNames: ['id'],
       referencedTableName: 'users',
@@ -61,7 +62,7 @@ export class CreateStatisticsTrades1633533233574 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropForeignKey('statistics', 'statisticsOfUser');
-    await queryRunner.dropTable('statistics');
+    await queryRunner.dropForeignKey('remove_trades', 'tradeOfUser');
+    await queryRunner.dropTable('remove_trades');
   }
 }

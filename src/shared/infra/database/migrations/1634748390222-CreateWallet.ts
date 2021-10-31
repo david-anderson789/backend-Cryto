@@ -3,11 +3,11 @@ import {
   MigrationInterface, QueryRunner, Table, TableForeignKey,
 } from 'typeorm';
 
-export class CreateStatisticsTrades1633533233574 implements MigrationInterface {
+export class CreateWallet1634748390222 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'statistics',
+        name: 'wallets',
         columns: [
           {
             name: 'id',
@@ -22,20 +22,8 @@ export class CreateStatisticsTrades1633533233574 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: 'today',
-            type: 'float',
-          },
-          {
-            name: 'currentWeek',
-            type: 'float',
-          },
-          {
-            name: 'currentMonth',
-            type: 'float',
-          },
-          {
-            name: 'currentYear',
-            type: 'float',
+            name: 'name',
+            type: 'varchar',
           },
           {
             name: 'created_at',
@@ -50,8 +38,8 @@ export class CreateStatisticsTrades1633533233574 implements MigrationInterface {
         ],
       }),
     );
-    await queryRunner.createForeignKey('statistics', new TableForeignKey({
-      name: 'statisticsOfUser',
+    await queryRunner.createForeignKey('wallets', new TableForeignKey({
+      name: 'walletsOfUser',
       columnNames: ['user_id'],
       referencedColumnNames: ['id'],
       referencedTableName: 'users',
@@ -61,7 +49,7 @@ export class CreateStatisticsTrades1633533233574 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropForeignKey('statistics', 'statisticsOfUser');
-    await queryRunner.dropTable('statistics');
+    await queryRunner.dropForeignKey('wallets', 'walletsOfUser');
+    await queryRunner.dropTable('wallets');
   }
 }
